@@ -1,0 +1,41 @@
+datasource db {
+    url      = env("DATABASE_URL")
+    provider = "postgresql"
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model Users {
+    id   Int    @default(autoincrement()) @map("id") @db.Integer
+    name String @map("name")
+
+    bank Bank[]
+
+    cards Card[]
+
+    @@id([id])
+    @@map("users")
+}
+
+model Bank {
+    id   Int    @default(autoincrement()) @map("id") @db.Integer
+    name String @map("name")
+
+    users Users[]
+
+    @@id([id])
+    @@map("bank")
+}
+
+model Card {
+    id      Int    @default(autoincrement()) @map("id") @db.Integer
+    title   String @map("title")
+    code    Int    @unique() @map("code") @db.Integer()
+    Users   Users? @relation(fields: [usersId], references: [id])
+    usersId Int?   @db.Integer
+
+    @@id([id])
+    @@map("card")
+}
